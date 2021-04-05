@@ -52,9 +52,9 @@ function preload(){
 }
 
 function setup() {
-    createCanvas(1000,500);
+    createCanvas(windowWidth,windowHeight);
 
-    DarkBeast = createSprite(100,330,50,80);
+    DarkBeast = createSprite(windowWidth/500,330,50,80);
     DarkBeast.addAnimation("walking", DBWImg);
     DarkBeast.addAnimation("jumping", DBJImg);
     DarkBeast.addAnimation("shooting", DBS_Img);
