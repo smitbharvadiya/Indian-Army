@@ -52,7 +52,7 @@ function preload(){
 }
 
 function setup() {
-    createCanvas(windowWidth, windowHeight);
+    createCanvas(1000, 500);
 
     DarkBeast = createSprite(windowWidth/10,windowHeight/1.5,50,80);
     DarkBeast.addAnimation("walking", DBWImg);
@@ -65,16 +65,16 @@ function setup() {
     Bullet.scale = 0.05;
     Bullet.visible = false;
 
-    base=createSprite(width/2,height/2);
+    base=createSprite(windowWidth/2,windowHeight/2);
     base.addImage(baseImg);
     base.scale=1.7;
     base.visible=false;
   
-    Ground = createSprite(width/2,height-130,width,20);
+    Ground = createSprite(windowWidth/2,windowHeight-130,windowWidth,20);
     Ground.shapeColor="gold";
     Ground.visible = false;
 
-    Background = createSprite(width/2,height/2,width,height);
+    Background = createSprite(windowWidth/2,windowHeight/2,width,windowHeight);
     Background.addImage(groundImg);
     Background.scale = 1.57;
     Background.x = Background.width/2;
@@ -265,7 +265,7 @@ function draw() {
 
 function Rocks(){
     if (frameCount % 350 === 0){
-      var rocks = createSprite(width,height-150,50,50);
+      var rocks = createSprite(windowWidth,windowHeight-150,50,50);
        var rand = Math.round(random(1,9));
        switch(rand) {
          case 1: rocks.addImage(Rock1);
@@ -299,7 +299,7 @@ function Rocks(){
 
 function Zombies() {
      if (frameCount % 300 === 0) {
-        var zombies = createSprite(width,height-200,50,10);
+        var zombies = createSprite(windowWidth,windowHeight-200,50,10);
         zombies.addAnimation("zom1", Zomb1);
         zombies.addAnimation("zom2", Zomb2);
         zombies.addAnimation("zom3", Zomb3);
@@ -321,7 +321,7 @@ function Zombies() {
      }
 
         if (frameCount % 700 === 0 && Score > 1500) {
-            var BloodySkull = createSprite(width,height-220,50,10);
+            var BloodySkull = createSprite(windowWidth,windowHeight-220,50,10);
             BloodySkull.shapeColor = "Black";
             BloodySkull.addAnimation("BloodySkull", BloodySImg);
             BloodySkull.scale = 1.2;
@@ -332,7 +332,7 @@ function Zombies() {
 
 function spins(){
 if (frameCount % 800 === 0 && Score > 3500) {
-        var spin = createSprite(width,height-150,50,10);
+        var spin = createSprite(windowWidth,windowHeight-150,50,10);
         spin.x = Math.round(random(900,1100));
         spin.velocityY = 2;
         spin.velocityX = -1.34;
@@ -345,7 +345,7 @@ if (frameCount % 800 === 0 && Score > 3500) {
 
 function dimonds() {
         if (frameCount % 500 === 0 && Score > 200) {
-         dimond=createSprite(width/2,height-130,10,10);
+         dimond=createSprite(windowWidth/2,windowHeight-130,10,10);
          dimond.scale=0.04;
          dimond.y = Math.round(random(250,380)); 
          dimond.addImage(dimondImg);
@@ -388,16 +388,16 @@ function reset(){
     Bullet.scale = 0.05;
     Bullet.visible = false;
 
-    base=createSprite(width/2,height/2);
+    base=createSprite(windowWidth/2,windowHeight/2);
     base.addImage(baseImg);
     base.scale=1.7;
     base.visible=false;
   
-    Ground = createSprite(width/2,height-130,width,20);
+    Ground = createSprite(windowWidth/2,windowHeight-130,windowWidth,20);
     Ground.shapeColor="gold";
     Ground.visible = false;
 
-    Background = createSprite(width/2,height/2,width,height);
+    Background = createSprite(windowWidth/2,windowHeight/2,width,windowHeight);
     Background.addImage(groundImg);
     Background.scale = 1.57;
     Background.x = Background.width/2;
@@ -426,9 +426,9 @@ function reset(){
     BulletIcon.addImage(BulletImgI);
     BulletIcon.scale=0.1;
 
-    upIcon=createSprite(windowWidth/1.15,windowHeight/1.4);
+    upIcon=createSprite(windowWidth/1.16,windowHeight/1.4);
     upIcon.addImage(upImg);
-    upIcon.scale=0.06;
+    upIcon.scale=0.08;
 
     RocksGroup = createGroup();
     ZombiesGroup = createGroup();
