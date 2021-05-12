@@ -12,7 +12,9 @@ var line;
 var base,baseImg;
 var dimond,dimondImg,dimondGroup;
 var coins=0;
-var icon,iconImg
+var icon,iconImg;
+var BulletIcon,BulletImgI;
+var upIcon,upImg;
 
 function preload(){
 
@@ -27,6 +29,8 @@ function preload(){
     restartImg = loadImage("restart.png");
     baseImg = loadImage("base.jpg");
     iconImg = loadImage("icon.png");
+    BulletImgI = loadImage("bullet icon.png");
+    upImg = loadImage("up icon.png");
 
     dimondImg = loadImage("diamond.png");
     spinImg = loadImage("spin.png");
@@ -48,52 +52,60 @@ function preload(){
 }
 
 function setup() {
-    createCanvas(1000,500);
+    createCanvas(1000, 500);
 
-    DarkBeast = createSprite(100,330,50,80);
+    DarkBeast = createSprite(windowWidth/10,windowHeight/1.5,50,80);
     DarkBeast.addAnimation("walking", DBWImg);
     DarkBeast.addAnimation("jumping", DBJImg);
     DarkBeast.addAnimation("shooting", DBS_Img);
-    DarkBeast.scale = 0.9;
+    DarkBeast.scale = 1.4;
 
-    Bullet = createSprite(140,319,10,5);
+    Bullet = createSprite(windowWidth/10,windowHeight/1.54,10,5);
     Bullet.addImage(BulletImg);
-    Bullet.scale = 0.04;
+    Bullet.scale = 0.05;
     Bullet.visible = false;
 
-    base=createSprite(500,250);
+    base=createSprite(windowWidth/2,windowHeight/2);
     base.addImage(baseImg);
-    base.scale=1;
+    base.scale=1.7;
     base.visible=false;
-
-    Ground = createSprite(500,410,1000,20);
+  
+    Ground = createSprite(windowWidth/2,windowHeight-130,windowWidth,20);
     Ground.shapeColor="gold";
     Ground.visible = false;
 
-    Background = createSprite(1000,250,1100,20);
+    Background = createSprite(displayWidth,displayHeight,displayWidth,displayHeight);
     Background.addImage(groundImg);
-    Background.scale = 1.02;
+    Background.scale = 1.57;
     Background.x = Background.width/2;
 
     Background.depth = DarkBeast.depth;
     DarkBeast.depth = DarkBeast.depth + 1;
 
-    GameOver = createSprite(500,170,50,50);
+    GameOver = createSprite(windowWidth/2,windowHeight/2.8,50,50);
     GameOver.addImage(gameoverImg);
-    GameOver.scale = 0.8;
+    GameOver.scale = 1;
     GameOver.visible = false;
 
-    Restart = createSprite(500,380,50,50);
+    Restart = createSprite(windowWidth/2,windowHeight/1.4,50,50);
     Restart.addImage(restartImg);
-    Restart.scale = 0.08;
+    Restart.scale = 0.09;
     Restart.visible = false;
 
-    line=createSprite(140,250,50,500);
+    line=createSprite(windowWidth/9,windowHeight/2,50,height);
     line.visible=false;
 
-    icon=createSprite(925,40);
+    icon=createSprite(windowWidth/1.1,windowHeight/20);
     icon.addImage(iconImg);
     icon.scale=0.04;
+
+    BulletIcon=createSprite(windowWidth/1.09,windowHeight/1.5);
+    BulletIcon.addImage(BulletImgI);
+    BulletIcon.scale=0.1;
+
+    upIcon=createSprite(windowWidth/1.16,windowHeight/1.4);
+    upIcon.addImage(upImg);
+    upIcon.scale=0.08;
 
     RocksGroup = createGroup();
     ZombiesGroup = createGroup();
@@ -102,6 +114,7 @@ function setup() {
     dimondGroup = createGroup();
 
     Score = 0;
+    coins =0;
 
     DarkBeast.setCollider("rectangle",-10,0,60,120);
 }
@@ -112,6 +125,10 @@ function draw() {
     Background.velocityX = -3;
 
     if (gameState === "play") {
+
+        Bullet.lifetime=2000;
+        BulletIcon.visible=true;
+        upIcon.visible=true;
 
         if(line.isTouching(spinGroup) || line.isTouching(ZombiesGroup) || line.isTouching(BloodyGroup) ) {
                 gameState = "end";
@@ -129,7 +146,7 @@ function draw() {
                 Background.x = Background.width/2;
               }        
 
-        if(keyDown("space") && DarkBeast.y >= 325) {
+        if(keyDown("space") && DarkBeast.y >= windowHeight-50) {
                 DarkBeast.velocityY = -11;
                 DarkBeast.changeAnimation("jumping", DBJImg);
                 Bullet.x = 130;
@@ -137,21 +154,31 @@ function draw() {
                 Bullet.visible = false;
         } 
 
-        if(DarkBeast.y < 280){
+        if(DarkBeast.y < windowHeight/1.5){
                 DarkBeast.changeAnimation("walking", DBWImg);
+        }
+
+        if(mousePressedOver(upIcon)  && DarkBeast.y >= 325){
+                DarkBeast.velocityY = -11;
+                DarkBeast.changeAnimation("jumping", DBJImg);
+                Bullet.x = 130;
+                Bullet.velocityX = 0;
+                Bullet.visible = false;
         }
 
             DarkBeast.velocityY = DarkBeast.velocityY + 0.5
             DarkBeast.collide(Ground);
            
-        if(keyDown("enter")) {
-               DarkBeast.changeAnimation("shooting", DBS_Img);
-               Bullet.velocityX = 20;
-               Bullet.visible = true;
-        } 
+            if(keyDown("enter")) {
+                DarkBeast.changeAnimation("shooting", DBS_Img);
+                Bullet.velocityX = 20;
+                Bullet.visible = true;
+         } 
 
-        if(keyWentUp("enter")){
-                DarkBeast.changeAnimation("walking", DBWImg);
+        if(mousePressedOver(BulletIcon)){
+              DarkBeast.changeAnimation("shooting", DBS_Img);
+              Bullet.velocityX = 20;
+              Bullet.visible = true;
         }
 
         if(ZombiesGroup.isTouching(Bullet)){
@@ -217,6 +244,9 @@ function draw() {
         GameOver.visible = true;
         Restart.visible = true;
 
+        BulletIcon.visible=false;
+        upIcon.visible=false;
+
         if(mousePressedOver(Restart)){
            reset();
         }
@@ -228,14 +258,14 @@ function draw() {
     stroke("black");
     textSize(25);
     fill("white");
-    text(": "+ coins, 950,47);
+    text(": "+ coins, windowWidth/1.08,windowHeight/17);
 
 }
 
 
 function Rocks(){
     if (frameCount % 350 === 0){
-      var rocks = createSprite(1100,380,50,50);
+      var rocks = createSprite(windowWidth,windowHeight-150,50,50);
        var rand = Math.round(random(1,9));
        switch(rand) {
          case 1: rocks.addImage(Rock1);
@@ -258,7 +288,7 @@ function Rocks(){
                  break;
          default: break;
        }
-       rocks.scale = 0.5;
+       rocks.scale = 0.8;
        rocks.velocityX = -6;
        rocks.lifetime = 1100;
        rocks.depth = Background.depth + 1;
@@ -269,7 +299,7 @@ function Rocks(){
 
 function Zombies() {
      if (frameCount % 300 === 0) {
-        var zombies = createSprite(1100,360,50,10);
+        var zombies = createSprite(windowWidth,windowHeight-200,50,10);
         zombies.addAnimation("zom1", Zomb1);
         zombies.addAnimation("zom2", Zomb2);
         zombies.addAnimation("zom3", Zomb3);
@@ -284,17 +314,17 @@ function Zombies() {
                 default: break;
         }
 
-        zombies.scale = 0.5;
+        zombies.scale = 0.8;
         zombies.velocityX = -(7 + 0.1*Score/400);
         zombies.lifetime = 1100;
         ZombiesGroup.add(zombies);
      }
 
         if (frameCount % 700 === 0 && Score > 1500) {
-            var BloodySkull = createSprite(1100,330,50,10);
+            var BloodySkull = createSprite(windowWidth,windowHeight-220,50,10);
             BloodySkull.shapeColor = "Black";
             BloodySkull.addAnimation("BloodySkull", BloodySImg);
-            BloodySkull.scale = 0.7;
+            BloodySkull.scale = 1.2;
             BloodySkull.velocityX = -(5 + 0.4*Score/3000);
             BloodyGroup.add(BloodySkull);
         } 
@@ -302,7 +332,7 @@ function Zombies() {
 
 function spins(){
 if (frameCount % 800 === 0 && Score > 3500) {
-        var spin = createSprite(1095,-10,50,10);
+        var spin = createSprite(windowWidth,windowHeight-150,50,10);
         spin.x = Math.round(random(900,1100));
         spin.velocityY = 2;
         spin.velocityX = -1.34;
@@ -315,7 +345,7 @@ if (frameCount % 800 === 0 && Score > 3500) {
 
 function dimonds() {
         if (frameCount % 500 === 0 && Score > 200) {
-         dimond=createSprite(1100,200,10,10);
+         dimond=createSprite(windowWidth/2,windowHeight-130,10,10);
          dimond.scale=0.04;
          dimond.y = Math.round(random(250,380)); 
          dimond.addImage(dimondImg);
@@ -331,13 +361,15 @@ function textscore(){
         stroke(0);
         fill(rgb(239, 235, 54));
         textSize(28);
-        text("Score: "+Score,25,35);  
+        text("Score: "+Score,windowWidth/80,windowHeight/19);  
 }     
 
 function reset(){
     gameState = "play";
     GameOver.visible = false;
     Restart.visible = false;
+    BulletIcon.visible=true;
+    upIcon.visible=true;
     
     RocksGroup.destroyEach();
     ZombiesGroup.destroyEach();
@@ -345,50 +377,58 @@ function reset(){
     spinGroup.destroyEach();
     dimondGroup.destroyEach();
 
-    DarkBeast = createSprite(100,330,50,80);
+    DarkBeast = createSprite(windowWidth/10,windowHeight/1.5,50,80);
     DarkBeast.addAnimation("walking", DBWImg);
     DarkBeast.addAnimation("jumping", DBJImg);
     DarkBeast.addAnimation("shooting", DBS_Img);
-    DarkBeast.scale = 0.9;
+    DarkBeast.scale = 1.4;
 
-    Bullet = createSprite(140,319,10,5);
+    Bullet = createSprite(windowWidth/10,windowHeight/1.54,10,5);
     Bullet.addImage(BulletImg);
-    Bullet.scale = 0.04;
+    Bullet.scale = 0.05;
     Bullet.visible = false;
 
-    base=createSprite(500,250);
+    base=createSprite(windowWidth/2,windowHeight/2);
     base.addImage(baseImg);
-    base.scale=1;
+    base.scale=1.7;
     base.visible=false;
-
-    Ground = createSprite(500,410,1000,20);
+  
+    Ground = createSprite(windowWidth/2,windowHeight-130,windowWidth,20);
     Ground.shapeColor="gold";
     Ground.visible = false;
 
-    Background = createSprite(1000,250,1100,20);
+    Background = createSprite(windowWidth/2,windowHeight/2,width,windowHeight);
     Background.addImage(groundImg);
-    Background.scale = 1.02;
+    Background.scale = 1.57;
     Background.x = Background.width/2;
 
     Background.depth = DarkBeast.depth;
     DarkBeast.depth = DarkBeast.depth + 1;
 
-    GameOver = createSprite(500,170,50,50);
+    GameOver = createSprite(windowWidth/2,windowHeight/2.8,50,50);
     GameOver.addImage(gameoverImg);
-    GameOver.scale = 0.8;
+    GameOver.scale = 1;
     GameOver.visible = false;
 
-    Restart = createSprite(500,380,50,50);
+    Restart = createSprite(windowWidth/2,windowHeight/1.4,50,50);
     Restart.addImage(restartImg);
-    Restart.scale = 0.08;
+    Restart.scale = 0.09;
     Restart.visible = false;
 
-    line=createSprite(140,250,50,500);
+    line=createSprite(windowWidth/9,windowHeight/2,50,height);
     line.visible=false;
 
-    icon=createSprite(925,40);
+    icon=createSprite(windowWidth/1.1,windowHeight/20);
     icon.addImage(iconImg);
     icon.scale=0.04;
+
+    BulletIcon=createSprite(windowWidth/1.09,windowHeight/1.5);
+    BulletIcon.addImage(BulletImgI);
+    BulletIcon.scale=0.1;
+
+    upIcon=createSprite(windowWidth/1.16,windowHeight/1.4);
+    upIcon.addImage(upImg);
+    upIcon.scale=0.08;
 
     RocksGroup = createGroup();
     ZombiesGroup = createGroup();
@@ -397,6 +437,7 @@ function reset(){
     dimondGroup = createGroup();
 
     Score = 0;
+    coins =0;
 
     DarkBeast.setCollider("rectangle",-10,0,60,120);
 }
