@@ -74,7 +74,7 @@ function setup() {
     Ground.shapeColor="gold";
     Ground.visible = false;
 
-    Background = createSprite(displayWidth,displayHeight,displayWidth,displayHeight);
+    Background = createSprite(displayWidth,displayHeight);
     Background.addImage(groundImg);
     Background.scale = 1.57;
     Background.x = Background.width/2;
